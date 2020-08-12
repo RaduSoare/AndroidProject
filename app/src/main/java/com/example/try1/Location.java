@@ -7,13 +7,16 @@ public class Location {
     private String locationAdress;
     private int thumbnailID;
     private String description;
+    private String thumbnailLink;
 
-    public Location(String locationName, String locationSpecific, String locationAdress, int thumbanilID, String description) {
+
+    public Location(String locationName, String locationSpecific, String locationAdress, int thumbanilID, String description, String thumbnailLink) {
         this.locationName = locationName;
         this.locationSpecific = locationSpecific;
         this.locationAdress = locationAdress;
         this.thumbnailID = thumbanilID;
         this.description = description;
+        this.thumbnailLink = thumbnailLink;
     }
 
     public String getLocationName() {
@@ -54,5 +57,13 @@ public class Location {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getThumbnailLink() {
+        return thumbnailLink;
+    }
+
+    public void setThumbnailLink(String thumbnailLink) {
+        this.thumbnailLink = thumbnailLink;
     }
 }

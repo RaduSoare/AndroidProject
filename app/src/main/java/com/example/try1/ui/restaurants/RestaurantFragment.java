@@ -48,6 +48,7 @@ public class RestaurantFragment extends Fragment{
 
         myAdapter = new LocationAdapter(this.getActivity(), ApplicationClass.restaurants);
         recyclerView.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
     }
 
 }

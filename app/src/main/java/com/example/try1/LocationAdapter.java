@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -65,7 +67,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
         holder.tvLocationSpecific.setText(locations.get(position).getLocationSpecific());
         holder.tvLocationName.setText(locations.get(position).getLocationName());
         holder.tvLocationAdress.setText(locations.get(position).getLocationAdress());
-        holder.ivLocationThumbnail.setImageResource(locations.get(position).getThumbnailID());
+      //  holder.ivLocationThumbnail.setImageResource(locations.get(position).getThumbnailID());
+
+        Glide.with(holder.itemView)
+                .load(locations.get(position).getThumbnailLink())
+                .into(holder.ivLocationThumbnail);
 
 
 
