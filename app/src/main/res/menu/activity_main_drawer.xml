@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_restaurants"
+            android:icon="@drawable/restaurant"
+            android:title="Restaurants" />
+        <item
+            android:id="@+id/nav_pubs"
+            android:icon="@drawable/pub"
+            android:title="Pubs" />
+        <item
+            android:id="@+id/nav_clubs"
+            android:icon="@drawable/club"
+            android:title="Clubs" />
+        <item
+            android:id="@+id/nav_parks"
+            android:icon="@drawable/nature"
+            android:title="Parks" />
+
+    </group>
+</menu>
