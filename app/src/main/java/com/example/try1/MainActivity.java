@@ -4,23 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.try1.ui.general.DetailFragment;
-import com.example.try1.ui.restaurants.RestaurantFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.try1.loginSystem.Login;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -29,13 +25,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity implements LocationAdapter.ItemClicked {
+public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
-
-
+    TextView tvUserName;
+    Button btnLogout;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +52,22 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.I
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        tvUserName = navigationView.getHeaderView(0).findViewById(R.id.tvUserName);
+
+        btnLogout = findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), Login.class));
+                finish();
+            }
+        });
+
+        tvUserName.setText(firebaseAuth.getCurrentUser().getEmail().toString());
 
 
 
@@ -76,11 +88,4 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.I
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    public void onItemClicked(int index) {
-        //Toast.makeText(this, ApplicationClass.restaurants.get(index).getDescription(), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(MainActivity.this, com.example.try1.ui.general.DetailActivity.class);
-        intent.putExtra("description", ApplicationClass.restaurants.get(index).getDescription());
-        startActivity(intent);
-    }
 }

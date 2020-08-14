@@ -1,5 +1,6 @@
 package com.example.try1.ui.restaurants;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,10 +15,11 @@ import android.widget.Toast;
 
 import com.example.try1.ApplicationClass;
 import com.example.try1.LocationAdapter;
+import com.example.try1.MainActivity;
 import com.example.try1.R;
 
 
-public class RestaurantFragment extends Fragment{
+public class RestaurantFragment extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
