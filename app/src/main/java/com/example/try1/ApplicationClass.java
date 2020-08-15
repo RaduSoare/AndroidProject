@@ -13,22 +13,24 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/*
+ Clasa Globala ce poate fi vazuta din tot proiectul pentru chestiile FOARTE generale
+ */
 public class ApplicationClass extends Application {
 
+    // Lista restaurantelor
     public static ArrayList<Location> restaurants;
 
-    //Firebase
-    private DatabaseReference myRef;
+    private DatabaseReference databaseReference;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        restaurants = new ArrayList<>();
-       /* restaurants.add(new Location("Dyonisos", "Greek Tavern", "La dreacu", R.drawable.dionysos, "Description Dyonisos", ""));
-        restaurants.add(new Location("DaVinci", "Cucina Italiana", "Bobalna ceva", R.drawable.davinci, "Description DaVinci", ""));*/
 
-        myRef = FirebaseDatabase.getInstance().getReference();
+        restaurants = new ArrayList<>();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         restaurants = new ArrayList<>();
 
@@ -38,19 +40,24 @@ public class ApplicationClass extends Application {
 
     }
 
-
+    /*
+       * Fiecare snapshot e un obiect din colectia "Restaurants"
+       * Parcurge fiecare obiect, face un query pe fiecare camp mentionat si creeaza un nou obiect
+       * * de tip Location cu datele obtinute
+       * TODO de facut refactor incat sa pot obtine cu metoda asta orice tip de Locatie
+     */
     private void getDataFromFirebase() {
-        Query query = myRef.child("restaurants");
+        Query query = databaseReference.child(getString(R.string.restaurants_location));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String name = snapshot.child("name").getValue().toString();
-                    String specific = snapshot.child("specific").getValue().toString();
-                    String adress = snapshot.child("location").getValue().toString();
-                    String description = snapshot.child("description").getValue().toString();
-                    String thumbnailLink = snapshot.child("image").getValue().toString();
-                    Location location = new Location(name, specific, adress, 14, description, thumbnailLink);
+                    String name = snapshot.child(getString(R.string.name_location_field)).getValue().toString();
+                    String specific = snapshot.child(getString(R.string.specific_location_field)).getValue().toString();
+                    String adress = snapshot.child(getString(R.string.adress_location_field)).getValue().toString();
+                    String description = snapshot.child(getString(R.string.description_location_field)).getValue().toString();
+                    String thumbnailLink = snapshot.child(getString(R.string.image_location_field)).getValue().toString();
+                    Location location = new Location(name, specific, adress,  description, thumbnailLink);
                     restaurants.add(location);
                 }
             }
@@ -62,6 +69,9 @@ public class ApplicationClass extends Application {
         });
     }
 
+    /*
+    * Curata lista inainte sa adauge noile Locatii updatate din Database
+     */
     private void clearAll() {
         if(restaurants != null) {
             restaurants.clear();

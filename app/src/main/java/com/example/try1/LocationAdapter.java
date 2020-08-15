@@ -38,25 +38,28 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
         ImageView ivLocationThumbnail;
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
+
+            // Instantieri componente din itemView, practic componentele unui element din lista de locatii
             tvLocationAdress = itemView.findViewById(R.id.tvLocationAdress);
             tvLocationName = itemView.findViewById(R.id.tvLocationName);
             tvLocationSpecific = itemView.findViewById(R.id.tvLocationSpecific);
             ivLocationThumbnail = itemView.findViewById(R.id.ivLocationThumbnail);
 
+            // Logica click pe un element din lista, trimitere catre activitatea de descriere a locatiei
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //activity.onItemClicked(locations.indexOf(view.getTag()));
                     Intent intent = new Intent(currentContext, com.example.try1.ui.general.DetailActivity.class);
-                    intent.putExtra("description", ApplicationClass.restaurants.get(locations.indexOf(view.getTag())).getDescription());
+                    intent.putExtra(currentContext.getString(R.string.description_location_field), ApplicationClass.restaurants.get(locations.indexOf(view.getTag())).getDescription());
                     currentContext.startActivity(intent);
                 }
             });
-            
+
+            // Logica click pe adresa unei locatii, pornire Maps cu pin pe locatie
             tvLocationAdress.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + tvLocationAdress.getText().toString()));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentContext.getString(R.string.location_hack) + tvLocationAdress.getText().toString()));
                     currentContext.startActivity(intent);
                 }
             });
@@ -64,6 +67,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     }
 
+    /*
+    Cred ca asta construieste felul in care arata RecycleView-ul
+     */
     @NonNull
     @Override
     public LocationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -71,6 +77,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
         return new ViewHolder(view);
     }
 
+    /*
+    Seteaza contentul din fiecare componenta din lista
+     */
     @Override
     public void onBindViewHolder(@NonNull LocationAdapter.ViewHolder holder, int position) {
         holder.itemView.setTag(locations.get(position));

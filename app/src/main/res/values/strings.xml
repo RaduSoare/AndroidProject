@@ -12,4 +12,18 @@
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email_empty">Email is Required</string>
+    <string name="password_empty">Password is Required</string>
+    <string name="password_constraint"><![CDATA[Password must be >= 6 Characters]]></string>
+    <string name="users_collection">users</string>
+    <string name="full_name_collection_field">FullName</string>
+    <string name="phone_number_collection_field">PhoneNumber</string>
+    <string name="email_collection_field">Email</string>
+    <string name="restaurants_location">restaurants</string>
+    <string name="name_location_field">name</string>
+    <string name="specific_location_field">specific</string>
+    <string name="adress_location_field">location</string>
+    <string name="description_location_field">description</string>
+    <string name="image_location_field">image</string>
+    <string name="location_hack">geo:0,0?q=</string>
 </resources>

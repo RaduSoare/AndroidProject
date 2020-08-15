@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
+
     TextView tvUserName;
     Button btnLogout;
     FirebaseAuth firebaseAuth;
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*
+        Cod autogenerat. Construieste drawerul
+         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -52,12 +56,13 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        // Instante din MainActivity
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-
         tvUserName = navigationView.getHeaderView(0).findViewById(R.id.tvUserName);
-
         btnLogout = findViewById(R.id.btnLogout);
+
+        // Logica buton de Logout
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,9 +72,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        // Afisare nume user in Drawer
         tvUserName.setText(firebaseAuth.getCurrentUser().getEmail().toString());
-
-
 
     }
 

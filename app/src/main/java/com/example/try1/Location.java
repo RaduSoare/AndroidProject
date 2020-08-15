@@ -5,16 +5,14 @@ public class Location {
     private String locationName;
     private String locationSpecific;
     private String locationAdress;
-    private int thumbnailID;
     private String description;
     private String thumbnailLink;
 
 
-    public Location(String locationName, String locationSpecific, String locationAdress, int thumbanilID, String description, String thumbnailLink) {
+    public Location(String locationName, String locationSpecific, String locationAdress, String description, String thumbnailLink) {
         this.locationName = locationName;
         this.locationSpecific = locationSpecific;
         this.locationAdress = locationAdress;
-        this.thumbnailID = thumbanilID;
         this.description = description;
         this.thumbnailLink = thumbnailLink;
     }
@@ -43,13 +41,6 @@ public class Location {
         this.locationAdress = locationAdress;
     }
 
-    public int getThumbnailID() {
-        return thumbnailID;
-    }
-
-    public void setThumbnailID(int thumbnailID) {
-        this.thumbnailID = thumbnailID;
-    }
 
     public String getDescription() {
         return description;
