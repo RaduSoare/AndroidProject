@@ -16,14 +16,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
     ArrayList<Location> locations;
     Context currentContext;
+    FirebaseFirestore firebaseFirestore;
+    FirebaseAuth firebaseAuth;
 
     public LocationAdapter(Context context, ArrayList<Location> list) {
 
@@ -35,7 +43,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvLocationName, tvLocationSpecific, tvLocationAdress;
-        ImageView ivLocationThumbnail;
+        ImageView ivLocationThumbnail, ivVisited;
+
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
 
@@ -44,6 +53,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             tvLocationName = itemView.findViewById(R.id.tvLocationName);
             tvLocationSpecific = itemView.findViewById(R.id.tvLocationSpecific);
             ivLocationThumbnail = itemView.findViewById(R.id.ivLocationThumbnail);
+            ivVisited = itemView.findViewById(R.id.ivVisited);
+
+            firebaseFirestore = FirebaseFirestore.getInstance();
+            firebaseAuth = FirebaseAuth.getInstance();
 
             // Logica click pe un element din lista, trimitere catre activitatea de descriere a locatiei
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +74,31 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentContext.getString(R.string.location_hack) + tvLocationAdress.getText().toString()));
                     currentContext.startActivity(intent);
+                }
+            });
+
+            ivVisited.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(currentContext.getResources().getIdentifier(currentContext.getString(R.string.not_visited_pic), "drawable", currentContext.getPackageName()) == R.drawable.not_visited) {
+                        ivVisited.setImageResource(R.drawable.visited);
+
+                        // Retine ID-ul userului curent
+                        String userID = firebaseAuth.getCurrentUser().getUid();
+
+                        // Retine documentul corespunzator ID-ului
+                        DocumentReference documentReference = firebaseFirestore.collection(currentContext.getString(R.string.users_collection)).document(userID);
+
+                        documentReference
+                                .update(currentContext.getString(R.string.visited_collection_field),
+                                        FieldValue.arrayUnion(ApplicationClass.restaurants.get(locations.indexOf(itemView.getTag())).getLocationName()))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(currentContext, "Successfully added to visited", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
                 }
             });
         }
