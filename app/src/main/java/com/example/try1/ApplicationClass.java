@@ -21,7 +21,9 @@ public class ApplicationClass extends Application {
     // Lista restaurantelor
     public static ArrayList<Location> restaurants;
 
+
     private DatabaseReference databaseReference;
+
 
 
     @Override

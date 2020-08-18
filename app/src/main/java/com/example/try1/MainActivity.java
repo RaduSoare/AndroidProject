@@ -2,6 +2,7 @@ package com.example.try1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -25,14 +26,24 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    public static HashMap<String, Boolean> locationsVisited;
 
     TextView tvUserName;
     Button btnLogout;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
+    DocumentReference firestoreReference;
+
+    private interface FirestoreCallback {
+        void onCallBack(HashMap<String, Boolean> locationsVisited);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +70,8 @@ public class MainActivity extends AppCompatActivity{
         // Instante din MainActivity
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        firestoreReference = firebaseFirestore.collection(getString(R.string.users_collection)).document(firebaseAuth.getCurrentUser().getUid());
+
         tvUserName = navigationView.getHeaderView(0).findViewById(R.id.tvUserName);
         btnLogout = findViewById(R.id.btnLogout);
 
@@ -75,6 +88,37 @@ public class MainActivity extends AppCompatActivity{
         // Afisare nume user in Drawer
         tvUserName.setText(firebaseAuth.getCurrentUser().getEmail().toString());
 
+        // Obtine locatiile vizitate de userul curent
+        getVisitedLocations(new FirestoreCallback() {
+            @Override
+            public void onCallBack(HashMap<String, Boolean> locationsVisited) {
+
+            }
+        });
+
+
+    }
+
+      /*
+    Hack pentru a putea folosi lista de locatii vizitate si in afara OnCreate
+    Aparent onComplete e asincrona si nu apuca sa se introduca datele in lista fara CallBack
+     */
+    private void getVisitedLocations(final FirestoreCallback firestoreCallback) {
+        firestoreReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()) {
+                        locationsVisited = (HashMap<String, Boolean>) document.get("visited");
+                        firestoreCallback.onCallBack(locationsVisited);
+                    } else {
+                        Log.d("TAG", "Error getting firestore document: " + task.getException());
+                    }
+                }
+            }
+
+        });
     }
 
 
