@@ -1,17 +1,28 @@
 package com.example.try1;
 
 import android.app.Application;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.try1.ui.leaderboard.LeaderboardEntry;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 /*
  Clasa Globala ce poate fi vazuta din tot proiectul pentru chestiile FOARTE generale
@@ -21,24 +32,23 @@ public class ApplicationClass extends Application {
     // Lista restaurantelor
     public static ArrayList<Location> restaurants;
 
-
     private DatabaseReference databaseReference;
-
-
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        restaurants = new ArrayList<>();
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         restaurants = new ArrayList<>();
 
         clearAll();
-
         getDataFromFirebase();
+
 
     }
 
@@ -80,4 +90,8 @@ public class ApplicationClass extends Application {
         }
         restaurants = new ArrayList<>();
     }
+
+
+
+
 }

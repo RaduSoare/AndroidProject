@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.try1.loginSystem.Login;
+import com.example.try1.ui.leaderboard.LeaderboardEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -16,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -34,6 +37,9 @@ public class MainActivity extends AppCompatActivity{
     private AppBarConfiguration mAppBarConfiguration;
 
     public static HashMap<String, Boolean> locationsVisited;
+
+    // Lista userilor din leaderboard
+    public static ArrayList<LeaderboardEntry> leaderboardUsers;
 
     TextView tvUserName;
     Button btnLogout;
@@ -60,7 +66,7 @@ public class MainActivity extends AppCompatActivity{
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_restaurants)
+                R.id.nav_home, R.id.nav_restaurants, R.id.nav_leaderboard)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -74,6 +80,8 @@ public class MainActivity extends AppCompatActivity{
 
         tvUserName = navigationView.getHeaderView(0).findViewById(R.id.tvUserName);
         btnLogout = findViewById(R.id.btnLogout);
+
+        leaderboardUsers = new ArrayList<>();
 
         // Logica buton de Logout
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +103,9 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+
+        // Obtine lista userilor pentru clasament
+        getUsersForLeaderboard();
 
 
     }
@@ -119,6 +130,25 @@ public class MainActivity extends AppCompatActivity{
             }
 
         });
+    }
+
+    private void getUsersForLeaderboard() {
+        firebaseFirestore.collection(getString(R.string.users_collection)).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                LeaderboardEntry leaderboardEntry = new LeaderboardEntry((String) document.get("fullName"), (int) ((HashMap<String, Object>) document.get("visited")).size());
+                                leaderboardUsers.add(leaderboardEntry);
+
+                            }
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
 

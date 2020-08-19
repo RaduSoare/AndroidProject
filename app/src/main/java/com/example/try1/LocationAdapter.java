@@ -5,31 +5,27 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.try1.ui.leaderboard.LeaderboardEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.core.operation.Merge;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
@@ -127,7 +123,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
                     // Adauga locatia in Map-ul de locatii vizitate de pe local
                     MainActivity.locationsVisited.put(ApplicationClass.restaurants.get(locations.indexOf(view.getTag())).getLocationName(), true);
                     // Adauga locatia in Map-ul de locatii vizitate din Firestore
-                    firestoreReference.update("visited."+ApplicationClass.restaurants.get(locations.indexOf(view.getTag())).getLocationName(), true);
+                    firestoreReference.update("visited."+ ApplicationClass.restaurants.get(locations.indexOf(view.getTag())).getLocationName(), true);
+                    // Updateaza clasamentul
+                    updateLeaderboard();
 
 
             }
@@ -145,13 +143,32 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     }
 
+    public void updateLeaderboard() {
+        firebaseFirestore.collection(currentContext.getString(R.string.users_collection)).document(userID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    String userName = document.getString("fullName");
+                    for (LeaderboardEntry x : MainActivity.leaderboardUsers) {
+                        if(x.getUserName().equals(userName)) {
+                            x.setLocationsVisited(x.getLocationsVisited() + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     /*
     Cred ca asta construieste felul in care arata RecycleView-ul
      */
     @NonNull
     @Override
     public LocationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.locations_view_layout, parent, false);
         return new ViewHolder(view);
     }
 
