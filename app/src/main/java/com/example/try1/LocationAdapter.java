@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -110,6 +111,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
         }
 
     }
+
+    /*
+    Dialog care intreaba userul daca este sigur ca vrea sa marcheze o locatie ca vizitata
+     */
     public void showMarkAsVisitedDialog(final View view, final ImageView ivVisited) {
 
         AlertDialog.Builder userOption = new AlertDialog.Builder(currentContext);
@@ -142,7 +147,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
 
     }
-
+    /*
+    Se apeleaza cand un user marcheaza ca vizitata o locatie noua
+    Cauta userul in lista din clasament si incrementeaza "Scorul"
+     */
     public void updateLeaderboard() {
         firebaseFirestore.collection(currentContext.getString(R.string.users_collection)).document(userID)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -150,7 +158,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    String userName = document.getString("fullName");
+                    String userName = document.getString(currentContext.getString(R.string.full_name_user_field));
                     for (LeaderboardEntry x : MainActivity.leaderboardUsers) {
                         if(x.getUserName().equals(userName)) {
                             x.setLocationsVisited(x.getLocationsVisited() + 1);
@@ -177,6 +185,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
      */
     @Override
     public void onBindViewHolder(@NonNull LocationAdapter.ViewHolder holder, final int position) {
+
         holder.itemView.setTag(locations.get(position));
 
         holder.tvLocationSpecific.setText(locations.get(position).getLocationSpecific());

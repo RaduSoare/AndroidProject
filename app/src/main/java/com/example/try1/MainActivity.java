@@ -132,6 +132,9 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    /*
+    Obtine userii din DB si creeaza o lista de forma (Nume, NrLocatiiVizitate) pentru clasament
+     */
     private void getUsersForLeaderboard() {
         firebaseFirestore.collection(getString(R.string.users_collection)).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -140,7 +143,8 @@ public class MainActivity extends AppCompatActivity{
                         if(task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                LeaderboardEntry leaderboardEntry = new LeaderboardEntry((String) document.get("fullName"), (int) ((HashMap<String, Object>) document.get("visited")).size());
+                                LeaderboardEntry leaderboardEntry = new LeaderboardEntry((String) document.get(getString(R.string.full_name_user_field)),
+                                        (int) ((HashMap<String, Object>) document.get(getString(R.string.visited_user_field))).size());
                                 leaderboardUsers.add(leaderboardEntry);
 
                             }

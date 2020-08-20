@@ -45,24 +45,28 @@ public class ApplicationClass extends Application {
         firebaseAuth = FirebaseAuth.getInstance();
 
         restaurants = new ArrayList<>();
-
-        clearAll();
-        getDataFromFirebase();
+        restaurants = getDataFromFirebase(restaurants, getString(R.string.restaurants_location));
 
 
     }
 
     /*
-       * Fiecare snapshot e un obiect din colectia "Restaurants"
-       * Parcurge fiecare obiect, face un query pe fiecare camp mentionat si creeaza un nou obiect
-       * * de tip Location cu datele obtinute
-       * TODO de facut refactor incat sa pot obtine cu metoda asta orice tip de Locatie
+     * Fiecare snapshot e un obiect din colectia data ca parametru
+     * Obtine fiecare locatie din colectia specificata
      */
-    private void getDataFromFirebase() {
-        Query query = databaseReference.child(getString(R.string.restaurants_location));
+    private ArrayList<Location> getDataFromFirebase(final ArrayList<Location> locations, String collection) {
+
+
+        Query query = databaseReference.child(collection);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                // Curata lista inainte sa adauge noile Locatii updatate din Database
+                if(locations != null) {
+                    locations.clear();
+                }
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.child(getString(R.string.name_location_field)).getValue().toString();
                     String specific = snapshot.child(getString(R.string.specific_location_field)).getValue().toString();
@@ -70,7 +74,7 @@ public class ApplicationClass extends Application {
                     String description = snapshot.child(getString(R.string.description_location_field)).getValue().toString();
                     String thumbnailLink = snapshot.child(getString(R.string.image_location_field)).getValue().toString();
                     Location location = new Location(name, specific, adress,  description, thumbnailLink);
-                    restaurants.add(location);
+                    locations.add(location);
                 }
             }
 
@@ -79,17 +83,11 @@ public class ApplicationClass extends Application {
 
             }
         });
+        return locations;
     }
 
-    /*
-    * Curata lista inainte sa adauge noile Locatii updatate din Database
-     */
-    private void clearAll() {
-        if(restaurants != null) {
-            restaurants.clear();
-        }
-        restaurants = new ArrayList<>();
-    }
+
+
 
 
 
