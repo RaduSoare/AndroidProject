@@ -12,13 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".loginSystem.Register">
+        <activity android:name=".OpeningPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".loginSystem.Register" />
         <activity android:name=".loginSystem.Login" />
         <activity android:name=".ui.general.DetailActivity" />
         <activity
