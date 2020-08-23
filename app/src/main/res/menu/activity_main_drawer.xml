@@ -16,16 +16,8 @@
             android:icon="@drawable/pub"
             android:title="Pubs" />
         <item
-            android:id="@+id/nav_clubs"
-            android:icon="@drawable/club"
-            android:title="Clubs" />
-        <item
-            android:id="@+id/nav_parks"
-            android:icon="@drawable/nature"
-            android:title="Parks" />
-        <item
             android:id="@+id/nav_leaderboard"
-            android:icon="@drawable/leaderboard"
+            android:icon="@drawable/people"
             android:title="Leaderboard" />
 
     </group>

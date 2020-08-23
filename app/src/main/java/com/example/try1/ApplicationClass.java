@@ -56,7 +56,6 @@ public class ApplicationClass extends Application {
      */
     private ArrayList<Location> getDataFromFirebase(final ArrayList<Location> locations, String collection) {
 
-
         Query query = databaseReference.child(collection);
         query.addValueEventListener(new ValueEventListener() {
             @Override
