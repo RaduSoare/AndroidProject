@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.try1.loginSystem.Login;
 import com.example.try1.ui.leaderboard.LeaderboardEntry;
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -35,11 +37,16 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
+    DrawerLayout drawer;
 
     public static HashMap<String, Boolean> locationsVisited;
 
     // Lista userilor din leaderboard
     public static ArrayList<LeaderboardEntry> leaderboardUsers;
+    public static String userID;
+    public static String userName;
+
+
 
     TextView tvUserName;
     Button btnLogout;
@@ -61,7 +68,7 @@ public class MainActivity extends AppCompatActivity{
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -80,6 +87,10 @@ public class MainActivity extends AppCompatActivity{
 
         tvUserName = navigationView.getHeaderView(0).findViewById(R.id.tvUserName);
         btnLogout = findViewById(R.id.btnLogout);
+
+        userID = firebaseAuth.getUid();
+        getUserField(getString(R.string.full_name_user_field));
+
 
         leaderboardUsers = new ArrayList<>();
 
@@ -169,5 +180,41 @@ public class MainActivity extends AppCompatActivity{
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    /*
+  Hack ca atunci cand se apasa BACK cu drawerul pornit, sa se inchida drawerul, nu aplicatia
+   */
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+
+    }
+
+    public void getUserField( final String fieldName) {
+        firebaseFirestore.collection(getString(R.string.users_collection)).document(userID).
+                get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    String result;
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    String userField = documentSnapshot.getString(fieldName);
+                    result = userField;
+                    setUserName(result);
+
+                }
+            }
+        });
+
+    }
+
+    public void setUserName(String result) {
+        userName = result;
+    }
+
 
 }

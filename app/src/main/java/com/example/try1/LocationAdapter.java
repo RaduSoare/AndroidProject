@@ -152,23 +152,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     Cauta userul in lista din clasament si incrementeaza "Scorul"
      */
     public void updateLeaderboard() {
-        firebaseFirestore.collection(currentContext.getString(R.string.users_collection)).document(userID)
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    String userName = document.getString(currentContext.getString(R.string.full_name_user_field));
-                    for (LeaderboardEntry x : MainActivity.leaderboardUsers) {
-                        if(x.getUserName().equals(userName)) {
-                            x.setLocationsVisited(x.getLocationsVisited() + 1);
-                            break;
-                        }
-                    }
-                }
+        String userName = MainActivity.userName;
+        for (LeaderboardEntry x : MainActivity.leaderboardUsers) {
+            if(x.getUserName().equals(userName)) {
+                x.setLocationsVisited(x.getLocationsVisited() + 1);
+                break;
             }
-        });
+        }
     }
+
+
 
     /*
     Cred ca asta construieste felul in care arata RecycleView-ul
